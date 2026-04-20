@@ -25,23 +25,27 @@ An advanced Discord server automation assistant powered by 14 free AI models acr
 ## Installation & Setup
 
 1. **Clone the repository:**
+
    ```bash
    git clone git@github.com:razaeldotexe/role-up.git
    cd role-up
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Configure Environment Variables:**
    Copy the example environment file and fill in your credentials:
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Deploy Slash Commands:**
+
    ```bash
    npm run deploy
    ```
