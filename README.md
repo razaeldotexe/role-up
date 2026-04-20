@@ -1,61 +1,61 @@
-# 🤖 Discord Automation AI Bot (April 2026 Edition)
+# Discord Server Automation AI Bot (2026 Edition)
 
-Asisten automasi server Discord canggih yang didukung oleh 14 model AI gratis dari 3 provider (Google, OpenRouter, Groq). Bot ini dirancang untuk membantu administrator mengelola role, identitas server, dan automasi lainnya menggunakan bahasa natural.
+An advanced Discord server automation assistant powered by 14 free AI models across three providers: Google, OpenRouter, and Groq. This bot is designed to help administrators manage roles, server identity, and general organization using natural language.
 
-## ✨ Fitur Utama
+## Key Features
 
-- **🚀 Triple-Provider Failover:** Rotasi otomatis antara Google, OpenRouter, dan Groq jika satu provider mengalami gangguan atau limitasi.
-- **🔄 Multi-Model Rotation:** Mencoba hingga 14 model berbeda (termasuk seri Gemini 2.5, Gemma 4, dan Llama 4 Scout) untuk memastikan bot tetap gratis dan responsif.
-- **🛠️ Server Automation (`/automate`):** 
-  - Mengelola hierarki role secara profesional.
-  - Mengubah nama server secara instan.
-  - Penyesuaian tema warna role secara massal (misal: Tema Fantasi, Minimalis, dll).
-  - Identifikasi grup role cerdas (Admin/Staff/Member).
-- **🎨 Modern Standards:** Dibangun dengan Discord.js v14 terbaru, ESM (ECMAScript Modules), ESLint, dan Prettier.
+- **Triple-Provider Failover:** Automatic rotation between Google, OpenRouter, and Groq if a provider experiences downtime or rate limits.
+- **Multi-Model Rotation:** Intelligently cycles through 14 different models (including Gemini 2.5, Gemma 4, and Llama 4 Scout) to ensure consistent service without cost.
+- **Server Automation (`/automate`):**
+  - **Professional Role Management:** Automatically creates and organizes role hierarchies (Admin, Moderator, Staff, etc.).
+  - **Dynamic Server Renaming:** Instantly updates the server name based on user prompts.
+  - **Themed Color Scaling:** Mass-updates role colors to match specific themes (e.g., Fantasy, Minimalist, Cyberpunk).
+  - **Smart Group Identification:** Identifies roles by permissions and naming patterns to apply bulk changes.
+- **Modern Architecture:** Built with Discord.js v14, ECMAScript Modules (ESM), ESLint, and Prettier.
 
-## 📋 Prasyarat
+## Prerequisites
 
-- Node.js v18 atau lebih baru.
-- Discord Bot Token dengan Intent: `GUILD_MEMBERS`, `GUILD_MESSAGES`, `MESSAGE_CONTENT`.
-- API Keys untuk (pilih minimal satu):
+- Node.js v18 or newer.
+- A Discord Bot Token with the following Intents: `GUILD_MEMBERS`, `GUILD_MESSAGES`, `MESSAGE_CONTENT`.
+- API Keys for at least one of the following providers:
   - [Google AI Studio](https://aistudio.google.com/)
   - [OpenRouter](https://openrouter.ai/)
   - [Groq](https://groq.com/)
 
-## 🚀 Instalasi & Setup
+## Installation & Setup
 
-1. **Clone repository ini:**
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/username/ai-roles-management.git
-   cd ai-roles-management
+   git clone git@github.com:razaeldotexe/role-up.git
+   cd role-up
    ```
 
-2. **Instal dependensi:**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Konfigurasi Environment:**
-   Copy `.env.example` menjadi `.env` dan isi token Anda:
+3. **Configure Environment Variables:**
+   Copy the example environment file and fill in your credentials:
    ```bash
    cp .env.example .env
    ```
 
-4. **Daftarkan Slash Command:**
+4. **Deploy Slash Commands:**
    ```bash
    npm run deploy
    ```
 
-5. **Jalankan Bot:**
+5. **Start the Bot:**
    ```bash
    npm start
    ```
 
-## 🛠️ Pengembangan
+## Development
 
-- **Linting:** `npm run lint` untuk mengecek kesalahan kode.
-- **Formatting:** `npm run format` untuk merapikan kode secara otomatis.
+- **Linting:** Run `npm run lint` to check for code issues.
+- **Formatting:** Run `npm run format` to automatically fix code style.
 
-## 📝 Lisensi
+## License
 
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
