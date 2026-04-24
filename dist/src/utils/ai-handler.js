@@ -1,6 +1,5 @@
 import axios from 'axios';
 import 'dotenv/config';
-
 const SYSTEM_INSTRUCTIONS = `
 You are a Discord Role Management Expert AI. Your goal is to help reorganize and manage roles based on user instructions with professional server standards.
 Current Roles in JSON:
@@ -23,8 +22,8 @@ IMPORTANT GUIDELINES:
 7. OUTPUT ONLY: DO NOT provide any text other than the JSON array.
 8. CAUTION: Do not delete roles unless explicitly asked or if they are clearly redundant.
 `;
-
 class ModelRegistry {
+  providers;
   constructor() {
     this.providers = [
       {
@@ -57,7 +56,6 @@ class ModelRegistry {
       },
     ];
   }
-
   async tryGoogle(prompt, rolesData, modelId) {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${process.env.GEMINI_API_KEY}`;
     const fullPrompt = SYSTEM_INSTRUCTIONS.replace(
@@ -69,7 +67,6 @@ class ModelRegistry {
     });
     return response.data.candidates[0].content.parts[0].text;
   }
-
   async tryOpenRouter(prompt, rolesData, modelId) {
     const fullPrompt = SYSTEM_INSTRUCTIONS.replace(
       '{ROLES_DATA}',
@@ -87,7 +84,6 @@ class ModelRegistry {
     );
     return response.data.choices[0].message.content;
   }
-
   async tryGroq(prompt, rolesData, modelId) {
     const fullPrompt = SYSTEM_INSTRUCTIONS.replace(
       '{ROLES_DATA}',
@@ -105,7 +101,6 @@ class ModelRegistry {
     );
     return response.data.choices[0].message.content;
   }
-
   async executeRotation(prompt, rolesData) {
     for (const provider of this.providers) {
       for (const modelId of provider.models) {
@@ -126,18 +121,20 @@ class ModelRegistry {
     return null;
   }
 }
-
 class ServerAutomator {
+  interaction;
+  guild;
+  summary;
   constructor(interaction) {
     this.interaction = interaction;
     this.guild = interaction.guild;
     this.summary = '';
   }
-
   async processAction(action) {
     try {
       switch (action.action) {
         case 'rename': {
+          if (!action.roleId || !action.newName) break;
           const role = this.guild.roles.cache.get(action.roleId);
           if (role) {
             const oldName = role.name;
@@ -147,6 +144,7 @@ class ServerAutomator {
           break;
         }
         case 'setColor': {
+          if (!action.roleId || !action.newColor) break;
           const role = this.guild.roles.cache.get(action.roleId);
           if (role) {
             await role.setColor(action.newColor);
@@ -155,6 +153,7 @@ class ServerAutomator {
           break;
         }
         case 'delete': {
+          if (!action.roleId) break;
           const role = this.guild.roles.cache.get(action.roleId);
           if (role) {
             const roleName = role.name;
@@ -164,6 +163,7 @@ class ServerAutomator {
           break;
         }
         case 'create': {
+          if (!action.name) break;
           const newRole = await this.guild.roles.create({
             name: action.name,
             color: action.color,
@@ -173,6 +173,7 @@ class ServerAutomator {
           break;
         }
         case 'renameServer': {
+          if (!action.newName) break;
           const oldName = this.guild.name;
           await this.guild.setName(action.newName);
           this.summary += `- Renamed server from **${oldName}** to **${action.newName}**\n`;
@@ -183,7 +184,6 @@ class ServerAutomator {
       this.summary += `⚠️ Gagal eksekusi: ${action.action} - ${err.message}\n`;
     }
   }
-
   async run(actions, providerInfo) {
     this.summary = `### AI Thinking (${providerInfo.providerName} - ${providerInfo.modelId})\n`;
     for (const action of actions) {
@@ -192,10 +192,11 @@ class ServerAutomator {
     return this.summary;
   }
 }
-
 export async function handleAIRoles(interaction, prompt) {
   await interaction.deferReply();
-
+  if (!interaction.guild) {
+    return interaction.editReply('Perintah ini hanya dapat digunakan di dalam server.');
+  }
   const roles = interaction.guild.roles.cache
     .map((r) => ({
       id: r.id,
@@ -205,27 +206,21 @@ export async function handleAIRoles(interaction, prompt) {
       managed: r.managed,
     }))
     .filter((r) => r.name !== '@everyone' && !r.managed);
-
   const registry = new ModelRegistry();
   const rotationResult = await registry.executeRotation(prompt, roles);
-
   if (!rotationResult) {
     return interaction.editReply('Sistem membutuhkan pendinginan sekitar 24jam');
   }
-
   try {
     const jsonText = rotationResult.rawResult.replace(/```json|```/gi, '').trim();
     const actions = JSON.parse(jsonText);
-
     if (!Array.isArray(actions) || actions.length === 0) {
       return interaction.editReply(
         `AI (${rotationResult.providerName} - ${rotationResult.modelId}) tidak menemukan perubahan yang diperlukan.`
       );
     }
-
     const automator = new ServerAutomator(interaction);
     const summary = await automator.run(actions, rotationResult);
-
     await interaction.editReply(summary);
   } catch (error) {
     console.error('Final Processing Error:', error);
