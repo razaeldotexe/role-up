@@ -21,15 +21,19 @@ export async function execute(interaction: Interaction) {
     console.error(`Error executing ${interaction.commandName}`);
     console.error(error);
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: 'There was an error while executing this command!',
-        flags: [64], // Ephemeral
-      }).catch(err => console.error('Error sending followUp:', err));
+      await interaction
+        .followUp({
+          content: 'There was an error while executing this command!',
+          flags: [64], // Ephemeral
+        })
+        .catch((err) => console.error('Error sending followUp:', err));
     } else {
-      await interaction.reply({
-        content: 'There was an error while executing this command!',
-        flags: [64], // Ephemeral
-      }).catch(err => console.error('Error sending reply:', err));
+      await interaction
+        .reply({
+          content: 'There was an error while executing this command!',
+          flags: [64], // Ephemeral
+        })
+        .catch((err) => console.error('Error sending reply:', err));
     }
   }
 }
